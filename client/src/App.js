@@ -14,6 +14,9 @@ const GET_ALL_MOVIES = gql`
       id
       title
       poster
+      tags {
+        text
+      }
     }
   }
 `;

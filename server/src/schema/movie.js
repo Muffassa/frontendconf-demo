@@ -1,3 +1,9 @@
+export default `
+type Tag {
+  id: Int!
+  text: String!
+}
+
 type MoviePreview {
   id: String!
   title: String
@@ -13,6 +19,7 @@ type MoviePreview {
   adult: Boolean
   overview: String
   release_date: String
+  tags: [Tag]
 }
 
 type Movie {
@@ -27,3 +34,4 @@ type Query {
   getMovie(movieId: Int!): Movie!
   searchMovie(query: String!): [MoviePreview]!
 }
+`

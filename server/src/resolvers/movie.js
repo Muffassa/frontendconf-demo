@@ -13,7 +13,8 @@ export default {
             poster: getPosterUrl(data.poster_path),
             voteAverage: data.vote_average,
             originalLanguage: data.original_language,
-            originalTitle: data.original_title
+            originalTitle: data.original_title,
+            tags: [{ id: 0, text: 'tag1' }, { id: 1, text: 'tag2' }]
           },
           data
         )
