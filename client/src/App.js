@@ -31,33 +31,12 @@ export class App extends React.Component {
 
   render() {
     return (<ApolloProvider client={client}>
-      <Query query={GET_ALL_MOVIES} variables={{ page: this.state.page }}>
-        {({ loading, data: { allMovies = [] }, error, fetchMore, variables: { page } }) => {
-          let content;
-          if (loading) { content = <div>Loading</div> } else
-            if (error) { content = <div>Error</div> } else {
-              content = (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    flexWrap: "wrap",
-                    marginTop: '35px',
-                  }}
-                >
-                  {allMovies.map(movie => (
-                    <MoviePreview movie={movie} key={movie.id} />
-                  ))}
-                </div>
-              )
-            }
-          return (
-            <div style={{ margin: '0 auto' }}>
-              <Button onClick={() => this.setState({ page: page === 1 ? page : page - 1 })}>PREV</Button>
-              <Button onClick={() => this.setState({ page: page + 1 })}>NEXT</Button>
-              {content}
-            </div>
-          );
+      <Query
+        query={GET_ALL_MOVIES}
+        variables={{ page: this.state.page }}
+        fetchPolicy="cache-first">
+        {(options) => {
+          ...
         }}
       </Query>
     </ApolloProvider>)
