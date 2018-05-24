@@ -1,12 +1,15 @@
-import React, { Component, Fragment } from "react";
-import { Query } from "react-apollo";
+import React from "react";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider, Query } from "react-apollo";
 import gql from "graphql-tag";
-import styled from "styled-components";
-import { MoviesList } from "./components";
 
-const GET_ALL_MOVIES_QUERY = gql`
-  {
-    allMovies(pageNumber: 1) {
+const client = new ApolloClient({
+  uri: "http://localhost:3000/graphql"
+});
+
+const GET_ALL_MOVIES = gql`
+  query allMovies($page: Int!) {
+    allMovies(pageNumber: $page) {
       id
       title
       poster
@@ -14,58 +17,34 @@ const GET_ALL_MOVIES_QUERY = gql`
   }
 `;
 
-const SEARCH_MOVIES_QUERY = gql`
-  query($query: String!) {
-    searchMovie(query: $query) {
-      id
-      title
-      poster
-    }
-  }
-`;
+export const App = () => (
+  <ApolloProvider client={client}>
+    <Query query={GET_ALL_MOVIES} variables={{ page: 1 }}>
+      {({ loading, data: { allMovies }, error }) => {
+        if (loading) return <div>Loading</div>;
+        if (error) return <div>Error</div>;
 
-const Input = styled.input`
-  margin-bottom: 50px;
-  margin-left: 150px;
-`;
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              flexWrap: "wrap"
+            }}
+          >
+            {allMovies.map(movie => (
+              <MoviePreview movie={movie} key={movie.id} />
+            ))}
+          </div>
+        );
+      }}
+    </Query>
+  </ApolloProvider>
+);
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      query: null
-    };
-  }
-
-  changeInputValue = ({ target: { value } }) => {
-    this.setState({ query: value });
-  };
-
-  render() {
-    return (
-      <Fragment>
-        <Input value={this.state.query} onChange={this.changeInputValue} />
-        <p>{this.state.query}</p>
-        <p>{JSON.stringify(Boolean(this.state.query))}</p>
-        <Query
-          query={SEARCH_MOVIES_QUERY}
-          variables={{ query: this.state.query }}
-          skip={!Boolean(this.state.query)}
-          delay
-        >
-          {({ loading, error, data, client }) => {
-            if (loading) return <p>...Loading</p>;
-            if (error) return <p>{JSON.stringify(error)}</p>;
-            return (
-              <Fragment>
-                <MoviesList movies={data.searchMovie} />
-              </Fragment>
-            );
-          }}
-        </Query>
-      </Fragment>
-    );
-  }
-}
-
-export default App;
+const MoviePreview = ({ movie: { poster, title } }) => (
+  <div>
+    <img src={poster} width="400" height="auto" />
+    <div>{title}</div>
+  </div>
+);
