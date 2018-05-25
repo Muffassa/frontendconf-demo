@@ -13,34 +13,42 @@ const GET_ALL_MOVIES = gql`
       id
       title
       poster
+      tags {
+        text
+      }
     }
   }
 `;
 
-export const App = () => (
-  <ApolloProvider client={client}>
-    <Query query={GET_ALL_MOVIES} variables={{ page: 1 }}>
-      {({ loading, data: { allMovies }, error }) => {
-        if (loading) return <div>Loading</div>;
-        if (error) return <div>Error</div>;
+export class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      page: 1
+    }
+  }
 
-        return (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              flexWrap: "wrap"
-            }}
-          >
-            {allMovies.map(movie => (
-              <MoviePreview movie={movie} key={movie.id} />
-            ))}
-          </div>
-        );
-      }}
-    </Query>
-  </ApolloProvider>
-);
+  render() {
+    return (<ApolloProvider client={client}>
+      <Query
+        query={GET_ALL_MOVIES}
+        variables={{ page: this.state.page }}
+        fetchPolicy="cache-first">
+        {(options) => {
+          ...
+        }}
+      </Query>
+    </ApolloProvider>)
+  }
+}
+
+const Button = styled.button`
+  width: 50%;
+  height: 50px;
+  cursor: pointer;
+  color: white;
+  background-color: #444456;
+`;
 
 const MoviePreview = ({ movie: { poster, title } }) => (
   <div>
