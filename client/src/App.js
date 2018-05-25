@@ -52,6 +52,7 @@ export class App extends React.Component {
               )
             }
           return (
+            <input type="checkbox" />
             <div style={{ margin: '0 auto' }}>
               <Button onClick={() => this.setState({ page: page === 1 ? page : page - 1 })}>PREV</Button>
               <Button onClick={() => this.setState({ page: page + 1 })}>NEXT</Button>

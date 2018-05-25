@@ -20,7 +20,7 @@ const schema = makeExecutableSchema({
 const PORT = 3000;
 
 const app = express();
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 app.use(cors("*"));
 app.use(
   "/graphql",
